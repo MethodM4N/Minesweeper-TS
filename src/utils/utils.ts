@@ -51,7 +51,6 @@ const grabAllAdjacentCells = (
 export const generateCells = (): Cell[][] => {
   let cells: Cell[][] = [];
 
-  // generating all cells
   for (let row = 0; row < MAX_ROWS; row++) {
     cells.push([]);
     for (let col = 0; col < MAX_COLS; col++) {
@@ -62,7 +61,6 @@ export const generateCells = (): Cell[][] => {
     }
   }
 
-  // randomly put 10 bombs
   let bombsPlaced = 0;
   while (bombsPlaced < NU_OF_BOMBS) {
     const randomRow = Math.floor(Math.random() * MAX_ROWS);
@@ -86,7 +84,6 @@ export const generateCells = (): Cell[][] => {
     }
   }
 
-  // calculate the numbers for each cell
   for (let rowIndex = 0; rowIndex < MAX_ROWS; rowIndex++) {
     for (let colIndex = 0; colIndex < MAX_COLS; colIndex++) {
       const currentCell = cells[rowIndex][colIndex];

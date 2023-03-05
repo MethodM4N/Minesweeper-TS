@@ -75,7 +75,6 @@ const App: React.FC = () => {
       return;
     }
 
-    // start the game
     if (!live) {
       let isABomb = newCells[rowParam][colParam].value === CellValue.bomb;
       while (isABomb) {
@@ -106,7 +105,6 @@ const App: React.FC = () => {
       newCells[rowParam][colParam].state = CellState.visible;
     }
 
-    // Check to see if you have won
     let safeOpenCellsExists = false;
     for (let row = 0; row < MAX_ROWS; row++) {
       for (let col = 0; col < MAX_COLS; col++) {
