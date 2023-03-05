@@ -5,6 +5,6 @@ import wonIco from "../assets/img/wonIco.png"
 
 export const MAX_ROWS = 16;
 export const MAX_COLS = 16;
-export const NU_OF_BOMBS = 1;
+export const NU_OF_BOMBS = 40;
 
 export const faceIco = [smileIco, ohIco, lostIco, wonIco];
