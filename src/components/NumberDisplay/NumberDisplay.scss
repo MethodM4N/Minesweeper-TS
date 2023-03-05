@@ -1,0 +1,13 @@
+@import '../../vendor/fonts.scss';
+
+.NumberDisplay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 48px;
+  color: #ff0701;
+  background: black;
+  font-family: 'Timer';
+  font-size: 40px;
+}
