@@ -14,7 +14,7 @@ https://methodm4n.github.io/Minesweeper-TS/
 
 ```
 - HTML5
-- CSS3
+- CSS3 (SCSS)
 ```
 
 ```JS
