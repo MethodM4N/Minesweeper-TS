@@ -1,6 +1,6 @@
 @import '../../styles/mixins.scss';
 
-.App {
+.Main {
   @include borders(white, #999);
   padding: 10px;
   background: #c0c0c0;
@@ -20,6 +20,16 @@
   display: grid;
   grid-template: repeat(16, 1fr) / repeat(16, 1fr);
   margin-top: 16px;
+
+  &__easy {
+    grid-template: repeat(8, 1fr) / repeat(8, 1fr);
+  }
+  &__norm {
+    grid-template: repeat(16, 1fr) / repeat(16, 1fr);
+  }
+  &__hard {
+    grid-template: repeat(16, 1fr) / repeat(32, 1fr);
+  }
 }
 
 .Face {

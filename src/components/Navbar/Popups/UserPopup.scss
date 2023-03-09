@@ -1,0 +1,50 @@
+.UserPopup {
+  background-color: #f0eded;
+
+  &__top-container {
+    background-color: #ddd;
+    padding: 3px 2px 5px 5px;
+    margin: 0;
+    display: flex;
+    list-style-type: none;
+
+    h2 {
+      margin: 0;
+      margin-right: 5px;
+      padding: 0;
+      font-size: 1rem;
+      font-weight: normal;
+      text-decoration: none;
+
+      span {
+        max-width: 22px;
+        font-style: italic;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  &__bottom-container {
+    padding-bottom: 5px;
+    margin-bottom: 2px;
+
+    p {
+      padding: 0;
+      padding-left: 2px;
+      margin: 5px 0 3px;
+    }
+    input {
+      padding: 0;
+      margin: 0 0 2px 2px;
+      padding-left: 2px;
+    }
+    label {
+      color: red;
+      margin: 0 0 2px 2px;
+    }
+  }
+  &__error_visible {
+    display: block;
+  }
+}

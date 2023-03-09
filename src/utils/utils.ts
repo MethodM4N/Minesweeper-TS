@@ -1,11 +1,12 @@
-import { MAX_COLS, MAX_ROWS, NU_OF_BOMBS } from "../constants/constants";
-import { Cell, CellState, CellValue } from "../types/types";
+import { Cell, CellState, CellValue } from '../types/types';
 
 const grabAllAdjacentCells = (
   cells: Cell[][],
   rowParam: number,
-  colParam: number
-) : {
+  colParam: number,
+  MAX_COLS: number,
+  MAX_ROWS: number,
+): {
   topLeftCell: Cell | null;
   topCell: Cell | null;
   topRightCell: Cell | null;
@@ -15,26 +16,17 @@ const grabAllAdjacentCells = (
   bottomCell: Cell | null;
   bottomRightCell: Cell | null;
 } => {
-  const topLeftCell =
-    rowParam > 0 && colParam > 0 ? cells[rowParam - 1][colParam - 1] : null;
+  const topLeftCell = rowParam > 0 && colParam > 0 ? cells[rowParam - 1][colParam - 1] : null;
   const topCell = rowParam > 0 ? cells[rowParam - 1][colParam] : null;
   const topRightCell =
-    rowParam > 0 && colParam < MAX_COLS - 1
-      ? cells[rowParam - 1][colParam + 1]
-      : null;
+    rowParam > 0 && colParam < MAX_COLS - 1 ? cells[rowParam - 1][colParam + 1] : null;
   const leftCell = colParam > 0 ? cells[rowParam][colParam - 1] : null;
-  const rightCell =
-    colParam < MAX_COLS - 1 ? cells[rowParam][colParam + 1] : null;
+  const rightCell = colParam < MAX_COLS - 1 ? cells[rowParam][colParam + 1] : null;
   const bottomLeftCell =
-    rowParam < MAX_ROWS - 1 && colParam > 0
-      ? cells[rowParam + 1][colParam - 1]
-      : null;
-  const bottomCell =
-    rowParam < MAX_ROWS - 1 ? cells[rowParam + 1][colParam] : null;
+    rowParam < MAX_ROWS - 1 && colParam > 0 ? cells[rowParam + 1][colParam - 1] : null;
+  const bottomCell = rowParam < MAX_ROWS - 1 ? cells[rowParam + 1][colParam] : null;
   const bottomRightCell =
-    rowParam < MAX_ROWS - 1 && colParam < MAX_COLS - 1
-      ? cells[rowParam + 1][colParam + 1]
-      : null;
+    rowParam < MAX_ROWS - 1 && colParam < MAX_COLS - 1 ? cells[rowParam + 1][colParam + 1] : null;
 
   return {
     topLeftCell,
@@ -44,11 +36,15 @@ const grabAllAdjacentCells = (
     rightCell,
     bottomLeftCell,
     bottomCell,
-    bottomRightCell
+    bottomRightCell,
   };
 };
 
-export const generateCells = (): Cell[][] => {
+export const generateCells = (
+  MAX_COLS: number,
+  MAX_ROWS: number,
+  NU_OF_BOMBS: number,
+): Cell[][] => {
   let cells: Cell[][] = [];
 
   for (let row = 0; row < MAX_ROWS; row++) {
@@ -56,7 +52,7 @@ export const generateCells = (): Cell[][] => {
     for (let col = 0; col < MAX_COLS; col++) {
       cells[row].push({
         value: CellValue.none,
-        state: CellState.hidden
+        state: CellState.hidden,
       });
     }
   }
@@ -73,12 +69,12 @@ export const generateCells = (): Cell[][] => {
           if (randomRow === rowIndex && randomCol === colIndex) {
             return {
               ...cell,
-              value: CellValue.bomb
+              value: CellValue.bomb,
             };
           }
 
           return cell;
-        })
+        }),
       );
       bombsPlaced++;
     }
@@ -100,8 +96,8 @@ export const generateCells = (): Cell[][] => {
         rightCell,
         bottomLeftCell,
         bottomCell,
-        bottomRightCell
-      } = grabAllAdjacentCells(cells, rowIndex, colIndex);
+        bottomRightCell,
+      } = grabAllAdjacentCells(cells, rowIndex, colIndex, MAX_COLS, MAX_ROWS);
 
       if (topLeftCell?.value === CellValue.bomb) {
         numberOfBombs++;
@@ -131,7 +127,7 @@ export const generateCells = (): Cell[][] => {
       if (numberOfBombs > 0) {
         cells[rowIndex][colIndex] = {
           ...currentCell,
-          value: numberOfBombs
+          value: numberOfBombs,
         };
       }
     }
@@ -143,14 +139,13 @@ export const generateCells = (): Cell[][] => {
 export const openAllEmptyCells = (
   cells: Cell[][],
   rowParam: number,
-  colParam: number
+  colParam: number,
+  MAX_COLS: number,
+  MAX_ROWS: number,
 ): Cell[][] => {
   const currentCell = cells[rowParam][colParam];
 
-  if (
-    currentCell.state === CellState.visible ||
-    currentCell.state === CellState.flagged
-  ) {
+  if (currentCell.state === CellState.visible || currentCell.state === CellState.flagged) {
     return cells;
   }
 
@@ -165,15 +160,12 @@ export const openAllEmptyCells = (
     rightCell,
     bottomLeftCell,
     bottomCell,
-    bottomRightCell
-  } = grabAllAdjacentCells(cells, rowParam, colParam);
+    bottomRightCell,
+  } = grabAllAdjacentCells(cells, rowParam, colParam, MAX_COLS, MAX_ROWS);
 
-  if (
-    topLeftCell?.state === CellState.hidden &&
-    topLeftCell.value !== CellValue.bomb
-  ) {
+  if (topLeftCell?.state === CellState.hidden && topLeftCell.value !== CellValue.bomb) {
     if (topLeftCell.value === CellValue.none) {
-      newCells = openAllEmptyCells(newCells, rowParam - 1, colParam - 1);
+      newCells = openAllEmptyCells(newCells, rowParam - 1, colParam - 1, MAX_COLS, MAX_ROWS);
     } else {
       newCells[rowParam - 1][colParam - 1].state = CellState.visible;
     }
@@ -181,18 +173,15 @@ export const openAllEmptyCells = (
 
   if (topCell?.state === CellState.hidden && topCell.value !== CellValue.bomb) {
     if (topCell.value === CellValue.none) {
-      newCells = openAllEmptyCells(newCells, rowParam - 1, colParam);
+      newCells = openAllEmptyCells(newCells, rowParam - 1, colParam, MAX_COLS, MAX_ROWS);
     } else {
       newCells[rowParam - 1][colParam].state = CellState.visible;
     }
   }
 
-  if (
-    topRightCell?.state === CellState.hidden &&
-    topRightCell.value !== CellValue.bomb
-  ) {
+  if (topRightCell?.state === CellState.hidden && topRightCell.value !== CellValue.bomb) {
     if (topRightCell.value === CellValue.none) {
-      newCells = openAllEmptyCells(newCells, rowParam - 1, colParam + 1);
+      newCells = openAllEmptyCells(newCells, rowParam - 1, colParam + 1, MAX_COLS, MAX_ROWS);
     } else {
       newCells[rowParam - 1][colParam + 1].state = CellState.visible;
     }
@@ -200,51 +189,39 @@ export const openAllEmptyCells = (
 
   if (leftCell?.state === CellState.hidden && leftCell.value !== CellValue.bomb) {
     if (leftCell.value === CellValue.none) {
-      newCells = openAllEmptyCells(newCells, rowParam, colParam - 1);
+      newCells = openAllEmptyCells(newCells, rowParam, colParam - 1, MAX_COLS, MAX_ROWS);
     } else {
       newCells[rowParam][colParam - 1].state = CellState.visible;
     }
   }
 
-  if (
-    rightCell?.state === CellState.hidden &&
-    rightCell.value !== CellValue.bomb
-  ) {
+  if (rightCell?.state === CellState.hidden && rightCell.value !== CellValue.bomb) {
     if (rightCell.value === CellValue.none) {
-      newCells = openAllEmptyCells(newCells, rowParam, colParam + 1);
+      newCells = openAllEmptyCells(newCells, rowParam, colParam + 1, MAX_COLS, MAX_ROWS);
     } else {
       newCells[rowParam][colParam + 1].state = CellState.visible;
     }
   }
 
-  if (
-    bottomLeftCell?.state === CellState.hidden &&
-    bottomLeftCell.value !== CellValue.bomb
-  ) {
+  if (bottomLeftCell?.state === CellState.hidden && bottomLeftCell.value !== CellValue.bomb) {
     if (bottomLeftCell.value === CellValue.none) {
-      newCells = openAllEmptyCells(newCells, rowParam + 1, colParam - 1);
+      newCells = openAllEmptyCells(newCells, rowParam + 1, colParam - 1, MAX_COLS, MAX_ROWS);
     } else {
       newCells[rowParam + 1][colParam - 1].state = CellState.visible;
     }
   }
 
-  if (
-    bottomCell?.state === CellState.hidden &&
-    bottomCell.value !== CellValue.bomb
-  ) {
+  if (bottomCell?.state === CellState.hidden && bottomCell.value !== CellValue.bomb) {
     if (bottomCell.value === CellValue.none) {
-      newCells = openAllEmptyCells(newCells, rowParam + 1, colParam);
+      newCells = openAllEmptyCells(newCells, rowParam + 1, colParam, MAX_COLS, MAX_ROWS);
     } else {
       newCells[rowParam + 1][colParam].state = CellState.visible;
     }
   }
 
-  if (
-    bottomRightCell?.state === CellState.hidden &&
-    bottomRightCell.value !== CellValue.bomb
-  ) {
+  if (bottomRightCell?.state === CellState.hidden && bottomRightCell.value !== CellValue.bomb) {
     if (bottomRightCell.value === CellValue.none) {
-      newCells = openAllEmptyCells(newCells, rowParam + 1, colParam + 1);
+      newCells = openAllEmptyCells(newCells, rowParam + 1, colParam + 1, MAX_COLS, MAX_ROWS);
     } else {
       newCells[rowParam + 1][colParam + 1].state = CellState.visible;
     }
